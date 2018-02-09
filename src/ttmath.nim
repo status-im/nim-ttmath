@@ -1,3 +1,6 @@
+import ttmathuint
+export ttmathuint
+
 const TTMATH_HEADER = "headers/ttmath.h"
 
 type
