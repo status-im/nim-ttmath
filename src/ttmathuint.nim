@@ -30,9 +30,6 @@ proc `*=`*(a: var UInt256, b: UInt256) {.importcpp: "# *= #".}
 
 proc `/=`*(a: var UInt256, b: UInt256) {.importcpp: "# /= #".}
 
-template `-`*(a: UInt256): UInt256 =
-  0.u256 - a
-
 proc `and`*(a: UInt256, b: UInt256): UInt256 {.importcpp: "(# & #)".}
 
 proc `or`*(a: UInt256, b: UInt256): UInt256 {.importcpp: "(# | #)".}
