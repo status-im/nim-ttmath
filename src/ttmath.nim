@@ -1,5 +1,8 @@
 import ttmathuint
 export ttmathuint
+import strutils
+
+{.passC: "-I" & currentSourcePath.rsplit("/", 1)[0].}
 
 const TTMATH_HEADER = "headers/ttmath.h"
 
