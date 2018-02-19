@@ -1,10 +1,12 @@
 import ttmathuint
 export ttmathuint
 import strutils
+from os import DirSep
 
-{.passC: "-I" & currentSourcePath.rsplit("/", 1)[0].}
+const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
+{.passC: "-I" & ttmathPath.}
 
-const TTMATH_HEADER = "headers/ttmath.h"
+const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
   Int256* {.importc: "ttmath::Int<4>", header: TTMATH_HEADER.} = object

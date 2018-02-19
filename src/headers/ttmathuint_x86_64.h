@@ -893,7 +893,7 @@ namespace ttmath
 	template<uint value_size>
 	sint UInt<value_size>::FindLeadingBitInWord(uint x)
 	{
-	sint result;
+	int64_t result;
 
 	
 		#ifndef __GNUC__
@@ -909,7 +909,7 @@ namespace ttmath
 
 
 		#ifdef __GNUC__
-		uint dummy;
+		int64_t dummy;
 
 				__asm__ (
 
@@ -918,7 +918,7 @@ namespace ttmath
 				"cmovz %1, %0          \n"
 
 				: "=r" (result), "=&r" (dummy)
-				: "r" (x)
+				: "r" (int64_t(x))
 				: "cc" );
 
 		#endif
