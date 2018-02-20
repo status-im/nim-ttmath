@@ -10,7 +10,7 @@ const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
   Int256* {.importc: "ttmath::Int<4>", header: TTMATH_HEADER.} = object
-    table: array[4, int]
+    table*: array[4, int]
 
   stdString {.importc: "std::string", header: "<string.h>".} = object
 
