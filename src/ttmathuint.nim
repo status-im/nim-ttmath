@@ -55,6 +55,11 @@ proc pow*(a: UInt256, b: uint64): UInt256 =
   tmp.inplacePow(b.u256)
   result = tmp
 
+proc pow*(a: UInt256, b: UInt256): UInt256 =
+  var tmp = a
+  tmp.inplacePow(b)
+  result = tmp
+
 proc `mod`*(a: UInt256, b: UInt256): UInt256 =
   var tmp = a
   tmp.inplaceDiv(b, result)
