@@ -9,90 +9,78 @@ const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
-  Int256* {.importc: "ttmath::Int<4>", header: TTMATH_HEADER.} = object
-    table*: array[4, int]
+  Int* {.importcpp: "ttmath::Int<'0>", header: TTMATH_HEADER.} [N: static[int]] = object
+
+  Int256* = Int[4]
+  Int512* = Int[8]
+  Int1024* = Int[16]
+  Int2048* = Int[32]
 
   stdString {.importc: "std::string", header: "<string.h>".} = object
 
-#var tmp256* {.exportc: "tmp256".}: Int256
+proc `+`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# + #)".}
+proc `-`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# - #)".}
+proc `*`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# * #)".}
+proc `/`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# / #)".}
+proc `div`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# / #)".}
 
-# var tmpString256* {.exportc: "tmpString256", importcpp: "(char*)malloc(sizeof(char) * 256)".}: cstring
+proc `==`*[N](a, b: Int[N]): bool {.importcpp: "(# == #)".}
+proc `<`*[N](a, b: Int[N]): bool {.importcpp: "(# < #)".}
+proc `<=`*[N](a, b: Int[N]): bool {.importcpp: "(# <= #)".}
 
-proc `+`*(a: Int256, b: Int256): Int256 {.importcpp: "(# + #)".}
+proc `+=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "# += #".}
+proc `-=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "# -= #".}
+proc `*=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "# *= #".}
+proc `/=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "# /= #".}
 
-proc `-`*(a: Int256, b: Int256): Int256 {.importcpp: "(# - #)".}
+proc `and`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# & #)".}
+proc `or`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# | #)".}
+proc `xor`*[N](a, b: Int[N]): Int[N] {.importcpp: "(# ^ #)".}
 
-proc `*`*(a: Int256, b: Int256): Int256 {.importcpp: "(# * #)".}
+proc `|=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "(# |= #)".}
+proc `&=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "(# &= #)".}
+proc `^=`*[N](a: var Int[N], b: Int[N]) {.importcpp: "(# ^= #)".}
 
-proc `/`*(a: Int256, b: Int256): Int256 {.importcpp: "(# / #)".}
+proc initInt[T](a: int): T {.importcpp: "'0((int)#)".}
+proc initInt[T](a: cstring): T {.importcpp: "'0(#)".}
 
-proc `div`*(a: Int256, b: Int256): Int256 {.importcpp: "(# / #)".}
+template defineConstructor(typ: typedesc, name: untyped{nkIdent}) =
+  template name*(a: int): typ = initInt[typ](a)
+  template name*(a: cstring): typ = initInt[typ](a)
 
-proc `==`*(a: Int256, b: Int256): bool {.importcpp: "(# == #)".}
+defineConstructor(Int256, i256)
+defineConstructor(Int512, i512)
+defineConstructor(Int1024, i1024)
+defineConstructor(Int2048, i2048)
 
-proc `<`*(a: Int256, b: Int256): bool {.importcpp: "(# < #)".}
+template `-`*[N](a: Int[N]): Int[N] =
+  initInt[Int[N]](0) - a
 
-proc `<=`*(a: Int256, b: Int256): bool {.importcpp: "(# <= #)".}
+proc inplacePow[N](a: var Int[N], b: Int[N]) {.importcpp: "(#.Pow(#))".}
+proc inplaceDiv[N](a: var Int[N], b: Int[N], c: var Int[N]) {.importcpp: "(#.Div(#, #))".}
 
-proc `+=`*(a: var Int256, b: Int256) {.importcpp: "# += #".}
-
-proc `-=`*(a: var Int256, b: Int256) {.importcpp: "# -= #".}
-
-proc `*=`*(a: var Int256, b: Int256) {.importcpp: "# *= #".}
-
-proc `/=`*(a: var Int256, b: Int256) {.importcpp: "# /= #".}
-
-template `-`*(a: Int256): Int256 =
-  0.i256 - a
-
-proc `and`*(a: Int256, b: Int256): Int256 {.importcpp: "(# & #)".}
-
-proc `or`*(a: Int256, b: Int256): Int256 {.importcpp: "(# | #)".}
-
-proc `xor`*(a: Int256, b: Int256): Int256 {.importcpp: "(# ^ #)".}
-
-proc i256*(a: int): Int256 {.importcpp: "ttmath::Int<4>((int)#)".}
-
-proc i256*(a: cstring): Int256 {.importcpp: "ttmath::Int<4>(#)".}
-
-proc i256*(a: string): Int256 =
-  cstring(a).i256
-
-proc inplacePow(a: var Int256, b: Int256) {.importcpp: "(#.Pow(#))".}
-
-proc inplaceDiv(a: var Int256, b: Int256, c: var Int256) {.importcpp: "(#.Div(#, #))".}
-
-proc pow*(a: Int256, b: int): Int256 =
+proc pow*[N](a: Int[N], b: int): Int[N] =
   var tmp = a
   tmp.inplacePow(b.i256)
   result = tmp
 
-proc `mod`*(a: Int256, b: Int256): Int256 =
+proc `mod`*[N](a, b: Int[N]): Int[N] =
   var tmp = a
   tmp.inplaceDiv(b, result)
 
-proc ToString(a: Int256, s: stdString | cstring) {.importcpp: "#.ToString(#)", header: TTMATH_HEADER.}
+proc ToString(a: Int, s: stdString | cstring) {.importcpp: "#.ToString(#)", header: TTMATH_HEADER.}
 
-proc strcpy(c: cstring, s: cstring) {.importc: "strcpy", header: "<cstring>".}
+proc `shl`*[N](a: Int[N], b: int): Int[N] {.importcpp: "(# << #)".}
+proc `shr`*[N](a: Int[N], b: int): Int[N] {.importcpp: "(# >> #)".}
 
-proc c_str(s: stdString): cstring {.importcpp: "#.c_str()", header: "<string.h>".}
+proc isZero*[N](a: Int[N]): bool {.importcpp: "IsZero", header: TTMATH_HEADER.}
+proc getInt*[N](a: Int[N]): int {.importcpp: "ToInt", header: TTMATH_HEADER.}
 
-#proc toCString*(a: Int256): cstring =
-
-proc `shl`*(a: Int256, b: int): Int256 {.importcpp: "(# << #)".}
-
-proc `shr`*(a: Int256, b: int): Int256 {.importcpp: "(# >> #)".}
-
-proc getInt*(a: Int256): int =
-  a.table[0]
-
-proc `$`*(a: Int256): string =
+proc `$`*(a: Int): string =
   var tmp: stdString
-  # TODO: something smarter
-  {.emit: "tmp = \"                                                                                \";".}
-  var s: cstring
-  {.emit: "s = new char[256];".}
   a.ToString(tmp)
-  strcpy(s, tmp.c_str())
-  result = $s
-  {.emit: "delete[] s;".}
+  var tmps: cstring
+  {.emit: """
+  `tmps` = const_cast<char*>(`tmp`.c_str());
+  """.}
+  result = $tmps
