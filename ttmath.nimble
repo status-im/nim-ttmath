@@ -8,3 +8,6 @@ srcDir        = "src"
 ### Dependencies
 requires "nim >= 0.17.2"
 
+task test, "Run tests":
+  --run
+  setCommand "cpp", "tests/test1.nim"
