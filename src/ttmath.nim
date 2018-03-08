@@ -22,52 +22,48 @@ type
   UInt1024* = UInt[16]
   UInt2048* = UInt[32]
 
+  TTInt = Int or UInt
+
   stdString {.importc: "std::string", header: "<string.h>".} = object
 
 proc inplacePow[T](a: var T, b: T) {.importcpp: "(#.Pow(#))".}
 proc inplaceDiv[T](a: var T, b: T, c: var T) {.importcpp: "(#.Div(#, #))".}
 
-template defineSharedProcs(TTInt: untyped) =
-  # These procs are legit for both Int and UInt
+proc `+`*(a, b: TTInt): TTInt {.importcpp: "(# + #)".}
+proc `-`*(a, b: TTInt): TTInt {.importcpp: "(# - #)".}
+proc `*`*(a, b: TTInt): TTInt {.importcpp: "(# * #)".}
+proc `/`*(a, b: TTInt): TTInt {.importcpp: "(# / #)".}
+proc `div`*(a, b: TTInt): TTInt {.importcpp: "(# / #)".}
 
-  proc `+`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# + #)".}
-  proc `-`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# - #)".}
-  proc `*`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# * #)".}
-  proc `/`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# / #)".}
-  proc `div`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# / #)".}
+proc `==`*(a, b: TTInt): bool {.importcpp: "(# == #)".}
+proc `<`*(a, b: TTInt): bool {.importcpp: "(# < #)".}
+proc `<=`*(a, b: TTInt): bool {.importcpp: "(# <= #)".}
 
-  proc `==`*[N](a, b: TTInt[N]): bool {.importcpp: "(# == #)".}
-  proc `<`*[N](a, b: TTInt[N]): bool {.importcpp: "(# < #)".}
-  proc `<=`*[N](a, b: TTInt[N]): bool {.importcpp: "(# <= #)".}
+proc `+=`*(a: var TTInt, b: TTInt) {.importcpp: "# += #".}
+proc `-=`*(a: var TTInt, b: TTInt) {.importcpp: "# -= #".}
+proc `*=`*(a: var TTInt, b: TTInt) {.importcpp: "# *= #".}
+proc `/=`*(a: var TTInt, b: TTInt) {.importcpp: "# /= #".}
 
-  proc `+=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "# += #".}
-  proc `-=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "# -= #".}
-  proc `*=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "# *= #".}
-  proc `/=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "# /= #".}
+proc `and`*(a, b: TTInt): TTInt {.importcpp: "(# & #)".}
+proc `or`*(a, b: TTInt): TTInt {.importcpp: "(# | #)".}
+proc `xor`*(a, b: TTInt): TTInt {.importcpp: "(# ^ #)".}
 
-  proc `and`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# & #)".}
-  proc `or`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# | #)".}
-  proc `xor`*[N](a, b: TTInt[N]): TTInt[N] {.importcpp: "(# ^ #)".}
+proc `|=`*(a: var TTInt, b: TTInt) {.importcpp: "(# |= #)".}
+proc `&=`*(a: var TTInt, b: TTInt) {.importcpp: "(# &= #)".}
+proc `^=`*(a: var TTInt, b: TTInt) {.importcpp: "(# ^= #)".}
 
-  proc `|=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "(# |= #)".}
-  proc `&=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "(# &= #)".}
-  proc `^=`*[N](a: var TTInt[N], b: TTInt[N]) {.importcpp: "(# ^= #)".}
+proc isZero*(a: TTInt): bool {.importcpp: "IsZero", header: TTMATH_HEADER.}
 
-  proc isZero*[N](a: TTInt[N]): bool {.importcpp: "IsZero", header: TTMATH_HEADER.}
+proc pow*(a, b: TTInt): TTInt =
+  var tmp = a
+  tmp.inplacePow(b)
+  result = tmp
 
-  proc pow*[N](a, b: TTInt[N]): TTInt[N] =
-    var tmp = a
-    tmp.inplacePow(b)
-    result = tmp
+proc `mod`*(a, b: TTInt): TTInt =
+  var tmp = a
+  tmp.inplaceDiv(b, result)
 
-  proc `mod`*[N](a, b: TTInt[N]): TTInt[N] =
-    var tmp = a
-    tmp.inplaceDiv(b, result)
-
-  proc ToString[N](a: TTInt[N], s: stdString) {.importcpp, header: TTMATH_HEADER.}
-
-defineSharedProcs(Int)
-defineSharedProcs(UInt)
+proc ToString(a: TTInt, s: stdString) {.importcpp, header: TTMATH_HEADER.}
 
 proc initInt[T](a: int64): T {.importcpp: "'0((int)#)".}
 proc initUInt[T](a: uint64): T {.importcpp: "'0((int)#)".}
