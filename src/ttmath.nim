@@ -87,23 +87,23 @@ defineUIntConstructor(UInt512, u512)
 defineUIntConstructor(UInt1024, u1024)
 defineUIntConstructor(UInt2048, u2048)
 
-template `-`*[N](a: Int[N]): Int[N] =
-  initInt[Int[N]](0) - a
+template `-`*(a: Int): Int =
+  initInt[Int](0) - a
 
-proc pow*[N](a: Int[N], b: int): Int[N] =
+proc pow*(a: Int, b: int): Int =
   var tmp = a
-  tmp.inplacePow(initInt[Int[N]](b))
+  tmp.inplacePow(initInt[Int](b))
   result = tmp
 
-proc pow*[N](a: UInt[N], b: int): UInt[N] =
+proc pow*(a: UInt, b: int): UInt =
   var tmp = a
-  tmp.inplacePow(initUInt[UInt[N]](b))
+  tmp.inplacePow(initUInt[UInt](b))
   result = tmp
 
-proc `shl`*[N](a: Int[N], b: int): Int[N] {.importcpp: "(# << #)".}
-proc `shr`*[N](a: Int[N], b: int): Int[N] {.importcpp: "(# >> #)".}
-proc `shl`*[N](a: UInt[N], b: uint64): UInt[N] {.importcpp: "(# << #)".}
-proc `shr`*[N](a: UInt[N], b: uint64): UInt[N] {.importcpp: "(# >> #)".}
+proc `shl`*(a: Int, b: int): Int {.importcpp: "(# << #)".}
+proc `shr`*(a: Int, b: int): Int {.importcpp: "(# >> #)".}
+proc `shl`*(a: UInt, b: uint64): UInt {.importcpp: "(# << #)".}
+proc `shr`*(a: UInt, b: uint64): UInt {.importcpp: "(# >> #)".}
 
 proc getInt*(a: Int): int {.importcpp: "ToInt", header: TTMATH_HEADER.}
 proc getUInt*(a: UInt): uint64 {.importcpp: "ToUInt", header: TTMATH_HEADER.}
