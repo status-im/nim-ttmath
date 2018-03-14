@@ -63,7 +63,7 @@ proc `mod`*(a, b: TTInt): TTInt =
   var tmp = a
   tmp.inplaceDiv(b, result)
 
-proc ToString(a: TTInt): stdString {.importcpp, header: TTMATH_HEADER.}
+proc ToString(a: TTInt, s: stdString) {.importcpp, header: TTMATH_HEADER.}
 
 proc initInt[T](a: int64): T {.importcpp: "'0((int)#)".}
 proc initUInt[T](a: uint64): T {.importcpp: "'0((int)#)".}
@@ -109,7 +109,8 @@ proc getInt*(a: Int): int {.importcpp: "ToInt", header: TTMATH_HEADER.}
 proc getUInt*(a: UInt): uint64 {.importcpp: "ToUInt", header: TTMATH_HEADER.}
 
 proc `$`*(a: Int or UInt): string =
-  let tmp = a.ToString()
+  var tmp: stdString
+  a.ToString(tmp)
   var tmps: cstring
   {.emit: """
   `tmps` = const_cast<char*>(`tmp`.c_str());
