@@ -63,7 +63,15 @@ proc `mod`*(a, b: TTInt): TTInt =
   var tmp = a
   tmp.inplaceDiv(b, result)
 
-proc ToString(a: TTInt, s: stdString) {.importcpp, header: TTMATH_HEADER.}
+proc ToString(a: TTInt, base: uint): stdString {.importcpp, header: TTMATH_HEADER.}
+
+proc toString*(a: TTInt, base: int = 10): string =
+  let tmp = a.ToString(uint(base))
+  var tmps: cstring
+  {.emit: """
+  `tmps` = const_cast<char*>(`tmp`.c_str());
+  """.}
+  result = $tmps
 
 proc initInt[T](a: int64): T {.importcpp: "'0((int)#)".}
 proc initUInt[T](a: uint64): T {.importcpp: "'0((int)#)".}
@@ -108,11 +116,9 @@ proc `shr`*(a: UInt, b: uint64): UInt {.importcpp: "(# >> #)".}
 proc getInt*(a: Int): int {.importcpp: "ToInt", header: TTMATH_HEADER.}
 proc getUInt*(a: UInt): uint64 {.importcpp: "ToUInt", header: TTMATH_HEADER.}
 
-proc `$`*(a: Int or UInt): string =
-  var tmp: stdString
-  a.ToString(tmp)
-  var tmps: cstring
-  {.emit: """
-  `tmps` = const_cast<char*>(`tmp`.c_str());
-  """.}
-  result = $tmps
+proc setZero*(a: var TTInt) {.importcpp: "SetZero", header: TTMATH_HEADER.}
+proc setOne*(a: var TTInt) {.importcpp: "SetOne", header: TTMATH_HEADER.}
+proc setMin*(a: var TTInt) {.importcpp: "SetMin", header: TTMATH_HEADER.}
+proc setMax*(a: var TTInt) {.importcpp: "SetMax", header: TTMATH_HEADER.}
+
+proc `$`*(a: Int or UInt): string {.inline.} = a.toString()
