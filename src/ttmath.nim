@@ -7,20 +7,20 @@ const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
-  UInt* {.importcpp: "ttmath::UInt<'0>", header: TTMATH_HEADER.} [N: static[int]] = object
-    table*: array[N, uint64] # TODO: This should likely be private, but it's used in nimbus...
+  UInt* {.importcpp: "ttmath::UInt<'0 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBytes: static[int]] = object
+    table*: array[NumBytes div sizeof(uint), uint] # TODO: This should likely be private, but it's used in nimbus...
 
-  Int* {.importcpp: "ttmath::Int<'0>", header: TTMATH_HEADER.} [N: static[int]] = object
+  Int* {.importcpp: "ttmath::Int<'0 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBytes: static[int]] = object
 
-  Int256* = Int[4]
-  Int512* = Int[8]
-  Int1024* = Int[16]
-  Int2048* = Int[32]
+  Int256* = Int[32]
+  Int512* = Int[64]
+  Int1024* = Int[128]
+  Int2048* = Int[256]
 
-  UInt256* = UInt[4]
-  UInt512* = UInt[8]
-  UInt1024* = UInt[16]
-  UInt2048* = UInt[32]
+  UInt256* = UInt[32]
+  UInt512* = UInt[64]
+  UInt1024* = UInt[128]
+  UInt2048* = UInt[256]
 
   TTInt = Int or UInt
 
@@ -120,5 +120,6 @@ proc setZero*(a: var TTInt) {.importcpp: "SetZero", header: TTMATH_HEADER.}
 proc setOne*(a: var TTInt) {.importcpp: "SetOne", header: TTMATH_HEADER.}
 proc setMin*(a: var TTInt) {.importcpp: "SetMin", header: TTMATH_HEADER.}
 proc setMax*(a: var TTInt) {.importcpp: "SetMax", header: TTMATH_HEADER.}
+proc clearFirstBits*(a: var TTInt, n: uint) {.importcpp: "ClearFirstBits", header: TTMATH_HEADER.}
 
 proc `$`*(a: Int or UInt): string {.inline.} = a.toString()
