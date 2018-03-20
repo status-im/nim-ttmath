@@ -7,20 +7,20 @@ const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
-  UInt* {.importcpp: "ttmath::UInt<'0 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBytes: static[int]] = object
-    table*: array[NumBytes div sizeof(uint), uint] # TODO: This should likely be private, but it's used in nimbus...
+  UInt* {.importcpp: "ttmath::UInt<'0 / 8 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBits: static[int]] = object
+    table*: array[NumBits div 8 div sizeof(uint), uint] # TODO: This should likely be private, but it's used in nimbus...
 
-  Int* {.importcpp: "ttmath::Int<'0 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBytes: static[int]] = object
+  Int* {.importcpp: "ttmath::Int<'0 / 8 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBits: static[int]] = object
 
-  Int256* = Int[32]
-  Int512* = Int[64]
-  Int1024* = Int[128]
-  Int2048* = Int[256]
+  Int256* = Int[256]
+  Int512* = Int[512]
+  Int1024* = Int[1024]
+  Int2048* = Int[2048]
 
-  UInt256* = UInt[32]
-  UInt512* = UInt[64]
-  UInt1024* = UInt[128]
-  UInt2048* = UInt[256]
+  UInt256* = UInt[256]
+  UInt512* = UInt[512]
+  UInt1024* = UInt[1024]
+  UInt2048* = UInt[2048]
 
   TTInt = Int or UInt
 
