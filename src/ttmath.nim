@@ -64,6 +64,7 @@ proc `mod`*(a, b: TTInt): TTInt =
   tmp.inplaceDiv(b, result)
 
 proc ToString(a: TTInt, base: uint): stdString {.importcpp, header: TTMATH_HEADER.}
+proc FromString(a: var TTInt, s: cstring, base: uint) {.importcpp, header: TTMATH_HEADER.}
 
 proc toString*(a: TTInt, base: int = 10): string =
   let tmp = a.ToString(uint(base))
@@ -72,6 +73,9 @@ proc toString*(a: TTInt, base: int = 10): string =
   `tmps` = const_cast<char*>(`tmp`.c_str());
   """.}
   result = $tmps
+
+proc fromString*(a: var TTInt, s: cstring, base: int = 10) = a.FromString(s, uint(base))
+proc fromHex*(a: var TTInt, s: string) {.inline.} = a.fromString(s, 16)
 
 proc initInt[T](a: int64): T {.importcpp: "'0((int)#)".}
 proc initUInt[T](a: uint64): T {.importcpp: "'0((int)#)".}
@@ -123,3 +127,21 @@ proc setMax*(a: var TTInt) {.importcpp: "SetMax", header: TTMATH_HEADER.}
 proc clearFirstBits*(a: var TTInt, n: uint) {.importcpp: "ClearFirstBits", header: TTMATH_HEADER.}
 
 proc `$`*(a: Int or UInt): string {.inline.} = a.toString()
+
+proc hexToUInt*[N](hexStr: string): UInt[N] {.inline.} = result.fromHex(hexStr)
+proc toHex*(a: TTInt): string {.inline.} = a.toString(16)
+
+proc toByteArrayBE*[N](num: UInt[N]): array[N div 8, byte] {.noSideEffect, noInit, inline.} =
+  ## Convert a TTInt (in native host endianness) to a big-endian byte array
+  const N = result.len
+  for i in 0 ..< N:
+    {.unroll: 4.}
+    result[i] = byte getUInt(num shr uint((N-1-i) * 8))
+
+proc readUintBE*[N](ba: openarray[byte]): UInt[N] {.noSideEffect, inline.} =
+  ## Convert a big-endian array of Bytes to an UInt256 (in native host endianness)
+  const sz = N div 8
+  assert(ba.len >= sz)
+  for i in 0 ..< sz:
+    {.unroll: 4.}
+    result = result shl 8 or initUInt[UInt[N]](ba[i])
