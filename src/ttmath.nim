@@ -126,6 +126,11 @@ proc setMin*(a: var TTInt) {.importcpp: "SetMin", header: TTMATH_HEADER.}
 proc setMax*(a: var TTInt) {.importcpp: "SetMax", header: TTMATH_HEADER.}
 proc clearFirstBits*(a: var TTInt, n: uint) {.importcpp: "ClearFirstBits", header: TTMATH_HEADER.}
 
+template max*[T: TTint]: TTInt =
+  var r = initInt[T](0)
+  r.setMax()
+  r
+
 proc `$`*(a: Int or UInt): string {.inline.} = a.toString()
 
 proc hexToUInt*[N](hexStr: string): UInt[N] {.inline.} = result.fromHex(hexStr)
