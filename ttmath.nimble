@@ -6,8 +6,17 @@ license       = "Apache License 2.0"
 srcDir        = "src"
 
 ### Dependencies
-requires "nim >= 0.17.2"
+requires "nim >= 0.18.1"
+
+proc test(name: string, lang = "cpp") =
+  if not dirExists "build":
+    mkDir "build"
+  if not dirExists "nimcache":
+    mkDir "nimcache"
+  --run
+  --nimcache: "nimcache"
+  switch("out", ("./build/" & name))
+  setCommand lang, "tests/" & name & ".nim"
 
 task test, "Run tests":
-  --run
-  setCommand "cpp", "tests/test1.nim"
+  test "test1"
