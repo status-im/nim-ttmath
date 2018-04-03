@@ -99,8 +99,7 @@ defineUIntConstructor(UInt512, u512)
 defineUIntConstructor(UInt1024, u1024)
 defineUIntConstructor(UInt2048, u2048)
 
-template `-`*(a: Int): Int =
-  initInt[Int](0) - a
+proc `-`*(a: Int): Int {.importcpp: "(- #)".}
 
 proc pow*(a: Int, b: int): Int =
   var tmp = a
