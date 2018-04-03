@@ -21,6 +21,7 @@ suite "ttmath":
       a + b == "28497092031222200795837".u256
       a + b != "28497092031222200795838".u256
       a + b < "28497092031222200795838".u256
+      pow(2.u256, 3) == 8.u256
 
 suite "Testing conversion functions: Hex, Bytes, Endianness":
   let

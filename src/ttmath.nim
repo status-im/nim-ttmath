@@ -106,7 +106,7 @@ proc pow*(a: Int, b: int): Int =
   tmp.inplacePow(initInt[Int](b))
   result = tmp
 
-proc pow*(a: UInt, b: int): UInt =
+proc pow*(a: UInt, b: uint): UInt =
   var tmp = a
   tmp.inplacePow(initUInt[UInt](b))
   result = tmp
