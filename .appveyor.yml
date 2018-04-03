@@ -37,12 +37,10 @@ install:
   - bin\nim c koch
   - koch boot -d:release
   - koch nimble
-  - cd %CD%
 build_script:
-  - cd %CD%  # Seems like the previous cd still leave me in the compiler dir
+  - cd C:\projects\nim-ttmath\
   - nimble install -y
 test_script:
-  - cd %CD%
   - nimble test
 
 deploy: off
