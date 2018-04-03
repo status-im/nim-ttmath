@@ -4,6 +4,9 @@ from os import DirSep
 const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
 {.passC: "-I" & ttmathPath.}
 
+when defined(windows):
+  {.passC: "-DTTMATH_NOASM".}
+
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
