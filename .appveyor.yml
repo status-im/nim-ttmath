@@ -39,8 +39,10 @@ install:
   - koch nimble
   - cd %CD%
 build_script:
+  - cd %CD%  # Seems like the previous cd still leave me in the compiler dir
   - nimble install -y
 test_script:
+  - cd %CD%
   - nimble test
 
 deploy: off
