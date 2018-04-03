@@ -5,6 +5,7 @@ const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
 {.passC: "-I" & ttmathPath.}
 
 when defined(windows):
+  # See https://github.com/status-im/nim-ttmath/issues/14
   {.passC: "-DTTMATH_NOASM".}
 
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
