@@ -154,14 +154,14 @@ proc readUintBE*[N](ba: openarray[byte]): UInt[N] {.noSideEffect, inline.} =
     {.unroll: 4.}
     result = result shl 8 or initUInt[UInt[N]](ba[i])
 
-proc inc*(a: var TTInt) {.inline.} =
+proc inc*(a: var TTInt, n = 1) {.inline.} =
   when a is Int:
-    a += initInt[type a](1)
+    a += initInt[type a](n)
   else:
-    a += initUInt[type a](1)
+    a += initUInt[type a](n)
 
-proc dec*(a: var TTInt) {.inline.} =
+proc dec*(a: var TTInt, n = 1) {.inline.} =
   when a is Int:
-    a -= initInt[type a](1)
+    a -= initInt[type a](n)
   else:
-    a -= initUInt[type a](1)
+    a -= initUInt[type a](n)
