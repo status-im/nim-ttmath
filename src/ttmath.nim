@@ -90,6 +90,7 @@ template defineIntConstructor(typ: typedesc, name: untyped{nkIdent}) =
   template name*(a: cstring): typ = initInt[typ](a)
 
 defineIntConstructor(Int256, i256)
+converter toInt256*(a: int{lit}): Int256 = a.i256 # Todo, add it to constructor template https://github.com/nim-lang/Nim/issues/7524
 defineIntConstructor(Int512, i512)
 defineIntConstructor(Int1024, i1024)
 defineIntConstructor(Int2048, i2048)
@@ -99,6 +100,7 @@ template defineUIntConstructor(typ: typedesc, name: untyped{nkIdent}) =
   template name*(a: cstring): typ = initInt[typ](a)
 
 defineUIntConstructor(UInt256, u256)
+converter toUInt256*(a: int{lit}): UInt256 = a.uint.u256 # Todo, add it to constructor template https://github.com/nim-lang/Nim/issues/7524
 defineUIntConstructor(UInt512, u512)
 defineUIntConstructor(UInt1024, u1024)
 defineUIntConstructor(UInt2048, u2048)
@@ -153,3 +155,15 @@ proc readUintBE*[N](ba: openarray[byte]): UInt[N] {.noSideEffect, inline.} =
   for i in 0 ..< sz:
     {.unroll: 4.}
     result = result shl 8 or initUInt[UInt[N]](ba[i])
+
+proc inc*(a: var TTInt, n = 1) {.inline.} =
+  when a is Int:
+    a += initInt[type a](n)
+  else:
+    a += initUInt[type a](n.uint)
+
+proc dec*(a: var TTInt, n = 1) {.inline.} =
+  when a is Int:
+    a -= initInt[type a](n)
+  else:
+    a -= initUInt[type a](n.uint)

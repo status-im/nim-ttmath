@@ -12,6 +12,18 @@ suite "ttmath":
       a + b < "28497092031222200795838".i256
       -a == "-12345678910111213141516".i256
 
+  test "Ints - syntactic sugar":
+    var a = i256"12345678910111213141516"
+    inc a
+    var b = i256"16151413121110987654321"
+    dec b
+    var c = a
+    c += 1 # test implicit converter
+    check:
+      a == i256"12345678910111213141517"
+      b == i256"16151413121110987654320"
+      c == i256"12345678910111213141518"
+
   test "UInts":
     let a = u256"12345678910111213141516"
     let b = u256"16151413121110987654321"
@@ -23,6 +35,18 @@ suite "ttmath":
       a + b < "28497092031222200795838".u256
       pow(2.u256, 3) == 8.u256
       pow(2.u256, 3'u64) == 8.u256
+
+  test "UInts - syntactic sugar":
+    var a = u256"12345678910111213141516"
+    inc a
+    var b = u256"16151413121110987654321"
+    dec b
+    var c = a
+    c += 1 # test implicit converter
+    check:
+      a == u256"12345678910111213141517"
+      b == u256"16151413121110987654320"
+      c == u256"12345678910111213141518"
 
 suite "Testing conversion functions: Hex, Bytes, Endianness":
   let
