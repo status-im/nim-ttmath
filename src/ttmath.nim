@@ -88,9 +88,12 @@ proc initInt[T](a: cstring): T {.importcpp: "'0(#)".}
 template defineIntConstructor(typ: typedesc, name: untyped{nkIdent}) =
   template name*(a: int64): typ = initInt[typ](a)
   template name*(a: cstring): typ = initInt[typ](a)
+  template `+`*(a: typ, b: int): typ = a + initInt[typ](b)
+  template `+`*(a: int, b: typ): typ = initInt[typ](a) + b
+  template `-`*(a: typ, b: int): typ = a - initInt[typ](b)
+  template `-`*(a: int, b: typ): typ = initInt[typ](a) - b
 
 defineIntConstructor(Int256, i256)
-converter toInt256*(a: int{lit}): Int256 = a.i256 # Todo, add it to constructor template https://github.com/nim-lang/Nim/issues/7524
 defineIntConstructor(Int512, i512)
 defineIntConstructor(Int1024, i1024)
 defineIntConstructor(Int2048, i2048)
@@ -98,9 +101,12 @@ defineIntConstructor(Int2048, i2048)
 template defineUIntConstructor(typ: typedesc, name: untyped{nkIdent}) =
   template name*(a: uint64): typ = initUInt[typ](a)
   template name*(a: cstring): typ = initInt[typ](a)
+  template `+`*(a: typ, b: int): typ = a + initUInt[typ](b)
+  template `+`*(a: int, b: typ): typ = initUInt[typ](a) + b
+  template `-`*(a: typ, b: int): typ = a - initUInt[typ](b)
+  template `-`*(a: int, b: typ): typ = initUInt[typ](a) - b
 
 defineUIntConstructor(UInt256, u256)
-converter toUInt256*(a: int{lit}): UInt256 = a.uint.u256 # Todo, add it to constructor template https://github.com/nim-lang/Nim/issues/7524
 defineUIntConstructor(UInt512, u512)
 defineUIntConstructor(UInt1024, u1024)
 defineUIntConstructor(UInt2048, u2048)
