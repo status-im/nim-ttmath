@@ -92,6 +92,8 @@ template defineIntConstructor(typ: typedesc, name: untyped{nkIdent}) =
   template `+`*(a: int, b: typ): typ = initInt[typ](a) + b
   template `-`*(a: typ, b: int): typ = a - initInt[typ](b)
   template `-`*(a: int, b: typ): typ = initInt[typ](a) - b
+  template `+=`*(a: var typ, b: int) = a += initInt[typ](b)
+  template `-=`*(a: var typ, b: int) = a -= initInt[typ](b)
 
 defineIntConstructor(Int256, i256)
 defineIntConstructor(Int512, i512)
@@ -105,6 +107,8 @@ template defineUIntConstructor(typ: typedesc, name: untyped{nkIdent}) =
   template `+`*(a: int, b: typ): typ = initUInt[typ](a) + b
   template `-`*(a: typ, b: int): typ = a - initUInt[typ](b)
   template `-`*(a: int, b: typ): typ = initUInt[typ](a) - b
+  template `+=`*(a: var typ, b: uint) = a += initUInt[typ](b)
+  template `-=`*(a: var typ, b: uint) = a -= initUInt[typ](b)
 
 defineUIntConstructor(UInt256, u256)
 defineUIntConstructor(UInt512, u512)
