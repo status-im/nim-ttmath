@@ -576,18 +576,23 @@ namespace ttmath
 	template<uint value_size>
 	sint UInt<value_size>::FindLeadingBitInWord(uint x)
 	{
-		if( x == 0 )
-			return -1;
+		// see: https://graphics.stanford.edu/~seander/bithacks.html#IntegerLogDeBruijn
+		// find the log base 2 of 32-bit x
+		int r; // result goes here
 
-		uint bit = TTMATH_BITS_PER_UINT - 1;
-		
-		while( (x & TTMATH_UINT_HIGHEST_BIT) == 0 )
-		{
-			x = x << 1;
-			--bit;
-		}
+		static const int MultiplyDeBruijnBitPosition[32] =
+				{
+						0, 9, 1, 10, 13, 21, 2, 29, 11, 14, 16, 18, 22, 25, 3, 30,
+						8, 12, 20, 28, 15, 17, 24, 7, 19, 27, 23, 6, 26, 5, 4, 31};
 
-	return bit;
+		x |= x >> 1; // first round down to one less than a power of 2
+		x |= x >> 2;
+		x |= x >> 4;
+		x |= x >> 8;
+		x |= x >> 16;
+
+		r = MultiplyDeBruijnBitPosition[(uint32_t)(x * 0x07C4ACDDU) >> 27];
+  return r;
 	}
 
 
