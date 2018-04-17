@@ -1,6 +1,16 @@
 import ttmath, unittest, strutils
 
 suite "ttmath":
+  test "String <-> Int":
+    let
+      a = i256"123456789012345679801234"
+      strVal = $a
+    check strVal == "123456789012345679801234"    
+  test "String <-> UInt":
+    let
+      a = u256"123456789012345679801234"
+      strVal = $a
+    check strVal == "123456789012345679801234"    
   test "Ints":
     let a = i256"12345678910111213141516"
     let b = i256"16151413121110987654321"
