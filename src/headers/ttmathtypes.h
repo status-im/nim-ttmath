@@ -210,8 +210,8 @@ namespace ttmath
 		typedef unsigned __int64 uint;
 		typedef signed   __int64 sint;
 	#else
-		typedef unsigned long uint;
-		typedef signed   long sint;
+		typedef uint64_t uint;  // Force 64 bits for GCC
+		typedef int64_t sint;   // Force 64 bits for GCC
 	#endif 
 
 	/*!
