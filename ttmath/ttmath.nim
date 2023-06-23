@@ -11,10 +11,10 @@ when defined(windows):
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
 type
-  UInt* {.importcpp: "ttmath::UInt<'0 / 8 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBits: static[int]] = object
+  UInt*[NumBits: static[int]] {.importcpp: "ttmath::UInt<'0 / 8 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} = object
     table*: array[NumBits div 8 div sizeof(uint), uint] # TODO: This should likely be private, but it's used in nimbus...
 
-  Int* {.importcpp: "ttmath::Int<'0 / 8 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} [NumBits: static[int]] = object
+  Int*[NumBits: static[int]] {.importcpp: "ttmath::Int<'0 / 8 / sizeof(ttmath::uint)>", header: TTMATH_HEADER.} = object
 
   Int256* = Int[256]
   Int512* = Int[512]
