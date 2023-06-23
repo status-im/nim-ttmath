@@ -2,11 +2,11 @@ import strutils
 from os import DirSep
 
 const ttmathPath = currentSourcePath.rsplit(DirSep, 1)[0]
-{.passC: "-I" & ttmathPath.}
+{.passc: "-I" & ttmathPath.}
 
 when defined(windows):
   # See https://github.com/status-im/nim-ttmath/issues/14
-  {.passC: "-DTTMATH_NOASM".}
+  {.passc: "-DTTMATH_NOASM".}
 
 const TTMATH_HEADER = ttmathPath & DirSep & "headers" & DirSep & "ttmath.h"
 
@@ -141,7 +141,7 @@ proc setMin*(a: var TTInt) {.importcpp: "SetMin", header: TTMATH_HEADER.}
 proc setMax*(a: var TTInt) {.importcpp: "SetMax", header: TTMATH_HEADER.}
 proc clearFirstBits*(a: var TTInt, n: uint) {.importcpp: "ClearFirstBits", header: TTMATH_HEADER.}
 
-template max*[T: TTint]: TTInt =
+template max*[T: TTInt]: TTInt =
   var r = initInt[T](0)
   r.setMax()
   r
@@ -151,14 +151,14 @@ proc `$`*(a: Int or UInt): string {.inline.} = a.toString()
 proc hexToUInt*[N](hexStr: string): UInt[N] {.inline.} = result.fromHex(hexStr)
 proc toHex*(a: TTInt): string {.inline.} = a.toString(16)
 
-proc toByteArrayBE*[N](num: UInt[N]): array[N div 8, byte] {.noSideEffect, noInit, inline.} =
+proc toByteArrayBE*[N](num: UInt[N]): array[N div 8, byte] {.noSideEffect, noinit, inline.} =
   ## Convert a TTInt (in native host endianness) to a big-endian byte array
   const N = result.len
   for i in 0 ..< N:
     {.unroll: 4.}
     result[i] = byte getUInt(num shr uint((N-1-i) * 8))
 
-proc readUintBE*[N](ba: openarray[byte]): UInt[N] {.noSideEffect, inline.} =
+proc readUIntBE*[N](ba: openArray[byte]): UInt[N] {.noSideEffect, inline.} =
   ## Convert a big-endian array of Bytes to an UInt256 (in native host endianness)
   const sz = N div 8
   assert(ba.len >= sz)

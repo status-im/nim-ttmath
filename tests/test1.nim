@@ -1,16 +1,16 @@
-import ttmath, unittest, strutils
+import ../ttmath/ttmath, unittest, strutils
 
 suite "ttmath":
   test "String <-> Int":
     let
       a = i256"123456789012345679801234"
       strVal = $a
-    check strVal == "123456789012345679801234"    
+    check strVal == "123456789012345679801234"
   test "String <-> UInt":
     let
       a = u256"123456789012345679801234"
       strVal = $a
-    check strVal == "123456789012345679801234"    
+    check strVal == "123456789012345679801234"
   test "Ints":
     let a = i256"12345678910111213141516"
     let b = i256"16151413121110987654321"
@@ -99,3 +99,4 @@ suite "Confirming consistency: hex vs decimal conversion":
         "84467545608142925331782333363288012579669270632210954476013542647119929595395".u1024
       hexToUInt[1024]("603D0AF084BF906B2CDF6CDDE8B2E1C3E51A41AF5E9ADEC7F3643B3F1AA2AADF") ==
         "43529886636775750164425297556346136250671451061152161143648812009114516499167".u1024
+
